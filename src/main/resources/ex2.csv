@@ -1,0 +1,7 @@
+id,firstName,lastName,address,birth
+1,Jean,Dupont,"188 Chemin, avec une virgule",1995-03-07
+,Jean,Dupont,"188 Chemin, avec une virgule",1995-03-07
+2,Jean1,Dupont,"188 Chemin, avec une virgule",1995-03-07
+3,Jean,Dupont1,"188 Chemin, avec une virgule",1995-03-07
+4,Jean,Dupont,,1995-03-07
+5,Jean,Dupont,"188 Chemin, avec une virgule",1995/03/07
