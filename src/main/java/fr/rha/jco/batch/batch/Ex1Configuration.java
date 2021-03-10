@@ -3,6 +3,7 @@ package fr.rha.jco.batch.batch;
 import javax.sql.DataSource;
 
 import fr.rha.jco.batch.input.StudentCsv;
+import fr.rha.jco.batch.listener.Ex3Listener;
 import fr.rha.jco.batch.output.StudentBdd;
 import fr.rha.jco.batch.processor.Ex1Processor;
 import lombok.RequiredArgsConstructor;
@@ -19,13 +20,16 @@ import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourc
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.FlatFileParseException;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
+import org.springframework.batch.item.validator.ValidationException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.dao.DuplicateKeyException;
 
 @Configuration
 @RequiredArgsConstructor
@@ -45,9 +49,16 @@ public class Ex1Configuration {
 
 	@Bean
 	public Step ex1Step(@Qualifier("ex1Reader") ItemReader<StudentCsv> reader,
-						final Ex1Processor processor) {
+						final Ex1Processor processor,
+						final Ex3Listener skipListener) {
 		return this.stepFactory.get("ex1Step")
 				.<StudentCsv, StudentBdd>chunk(10)
+				.faultTolerant()
+				.skip(ValidationException.class)
+				.skip(FlatFileParseException.class)
+				.skip(DuplicateKeyException.class)
+				.skipLimit(Integer.MAX_VALUE)
+				.listener(skipListener)
 				.reader(reader)
 				.processor(processor)
 				// Set by spring-batch, so null
