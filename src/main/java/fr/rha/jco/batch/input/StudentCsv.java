@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -16,6 +17,7 @@ import org.springframework.lang.Nullable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @ToString(of = {"id", "firstName", "lastName"})
 public class StudentCsv {
 	@NotNull

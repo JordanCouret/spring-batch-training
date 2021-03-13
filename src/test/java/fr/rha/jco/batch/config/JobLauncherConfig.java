@@ -19,4 +19,14 @@ public class JobLauncherConfig {
 			}
 		};
 	}
+	@Bean
+	public JobLauncherTestUtils ex4JobTest() {
+		return new JobLauncherTestUtils() {
+			@Override
+			@Autowired
+			public void setJob(@Qualifier("ex4Job") Job job) {
+				super.setJob(job);
+			}
+		};
+	}
 }
