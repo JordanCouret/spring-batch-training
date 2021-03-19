@@ -13,7 +13,6 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
-import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
@@ -37,7 +36,7 @@ public class Ex1Configuration {
 	private final StepBuilderFactory stepFactory;
 
 	@Bean
-	public Job ex1Job(@Qualifier("ex1Step") Step step)  {
+	public Job ex1Job(@Qualifier("ex1Step") Step step) {
 		return this.jobFactory.get("ex1Job")
 				.start(step)
 				.build();
@@ -45,7 +44,7 @@ public class Ex1Configuration {
 
 	@Bean
 	public Step ex1Step(@Qualifier("ex1Reader") ItemReader<StudentCsv> reader,
-						final Ex1Processor processor) {
+			final Ex1Processor processor) {
 		return this.stepFactory.get("ex1Step")
 				.<StudentCsv, StudentBdd>chunk(10)
 				.reader(reader)
@@ -82,6 +81,5 @@ public class Ex1Configuration {
 				.dataSource(dataSource)
 				.build();
 	}
-
 
 }
