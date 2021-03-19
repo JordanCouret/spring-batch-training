@@ -1,0 +1,29 @@
+= Spring-Batch training
+
+If you are there, that means you want to learn how spring-batch works or test it before use it in your project.
+
+== Requirements
+
+* Java 11
+* Maven
+* IDE
+
+== How works this repo ?
+
+* Clone this project in local
+* Checkout on result/ex-0 to start
+* Check the wiki for exercise
+
+
+.Exercise list:
+. Read csv and write in database
+. Simple validation items in processor
+. Validation with the Skip mechanism & Listener to log this skip items
+. Read from a database and use multiple writer (file, database etc...)
+. Retry a failed job
+
+== Contributing
+
+You can use GitHub issues to track bugs & enhancements
+
+Enjoy !
