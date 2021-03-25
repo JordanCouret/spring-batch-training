@@ -1,12 +1,7 @@
 package fr.rha.jco.batch.integration;
 
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
-
-import fr.rha.jco.batch.batch.Ex4Configuration;
-import fr.rha.jco.batch.service.RetryService;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -20,43 +15,43 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.util.FileCopyUtils;
+import org.springframework.test.context.jdbc.SqlConfig;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Sql(scripts = "/ex1.sql")
+@Sql(scripts = "/ex6_one.sql", config = @SqlConfig(dataSource = "oneDataSource"))
+@Sql(scripts = "/ex6_two.sql", config = @SqlConfig(dataSource = "twoDataSource"))
 @SpringBootTest
-@ActiveProfiles("ex5-retry")
-class Ex5RetryServiceTests {
+@ActiveProfiles("ex4")
+class Ex6Tests {
 	@Autowired
-	@Qualifier("ex1JobTest")
+	@Qualifier("ex6JobTest")
 	private JobLauncherTestUtils jobLauncherTestUtils;
 
 	@Autowired
-	private JdbcTemplate jdbcTemplate;
+	@Qualifier("oneJdbcTemplate")
+	private JdbcTemplate oneJdbcTemplate;
 
 	@Autowired
-	private RetryService retryService;
+	@Qualifier("twoJdbcTemplate")
+	private JdbcTemplate twoJdbcTemplate;
 
 	@Test
-	@DisplayName("Should handle a job retry")
+	@DisplayName("Should import and handle rollback")
 	@SneakyThrows
+	@Disabled // A supprimer pour l'Ex 6 (snas les modifs ex 7)
 	void shouldSucess() {
 		// GIVEN
 		JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
-		jobParametersBuilder.addString("fileName", new ClassPathResource("ex5.csv").getFile().getAbsolutePath());
+		jobParametersBuilder.addString("fileName", new ClassPathResource("ex6.csv").getFile().getAbsolutePath());
 
-		// Should failed cause address is too long
+		// WHEN
 		JobExecution jobExecution = jobLauncherTestUtils.launchJob(jobParametersBuilder.toJobParameters());
+
+		// THEN
 		assertThat(jobExecution.getExitStatus().getExitCode()).isEqualTo("FAILED");
-		assertThat(jdbcTemplate.queryForObject("SELECT count(*) FROM student", Integer.class)).isEqualTo(0);
-
-		// Update H2 varchar to handle this error
-		jdbcTemplate.update("alter table student drop column address");
-		jdbcTemplate.update("alter table student add address varchar(400)");
-
-		JobExecution retryExecution = retryService.retry(jobExecution);
-		assertThat(retryExecution.getExitStatus().getExitCode()).isEqualTo("COMPLETED");
-		assertThat(jdbcTemplate.queryForObject("SELECT count(*) FROM student", Integer.class)).isEqualTo(3);
+		assertThat(oneJdbcTemplate.queryForObject("SELECT count(*) FROM student", Long.class))
+				.isEqualTo(twoJdbcTemplate.queryForObject("SELECT count(*) FROM address", Long.class))
+				.isEqualTo(50);
 	}
 }

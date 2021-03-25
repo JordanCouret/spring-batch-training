@@ -16,6 +16,7 @@ If you are there, that means you want to learn how spring-batch works or test it
 
 
 .Exercise list:
+
 . Read csv and write in database
 . Simple validation items in processor
 . Validation with the Skip mechanism & Listener to log this skip items

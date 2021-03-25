@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
 public class JobLauncherConfig {
@@ -25,6 +26,17 @@ public class JobLauncherConfig {
 			@Override
 			@Autowired
 			public void setJob(@Qualifier("ex4Job") Job job) {
+				super.setJob(job);
+			}
+		};
+	}
+	@Bean
+	@Profile("ex4")
+	public JobLauncherTestUtils ex6JobTest() {
+		return new JobLauncherTestUtils() {
+			@Override
+			@Autowired
+			public void setJob(@Qualifier("ex6Job") Job job) {
 				super.setJob(job);
 			}
 		};

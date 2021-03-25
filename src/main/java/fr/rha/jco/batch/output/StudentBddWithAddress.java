@@ -1,30 +1,27 @@
 package fr.rha.jco.batch.output;
 
-import fr.rha.jco.batch.input.StudentCsv;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import fr.rha.jco.batch.input.StudentCsv;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 @NoArgsConstructor
 @Data
-@ToString(of = {"id", "firstName", "lastName"})
-public class StudentBdd {
-	protected Long id;
-	protected String firstName;
-	protected String lastName;
-	protected String address;
-	protected LocalDate birth;
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public class StudentBddWithAddress extends StudentBdd{
+	private Long addressId;
 
-	public StudentBdd(StudentCsv csv) {
+	public StudentBddWithAddress(StudentCsv csv, Long addressId) {
 		this.id = csv.getId();
 		this.firstName = csv.getFirstName();
 		this.lastName = csv.getLastName();
 		this.address = csv.getAddress();
 		this.birth = LocalDate.parse(csv.getBirth(), DateTimeFormatter.ISO_LOCAL_DATE);
+		this.addressId = addressId;
 	}
 }
